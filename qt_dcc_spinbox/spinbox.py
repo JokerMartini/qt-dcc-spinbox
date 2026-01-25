@@ -202,29 +202,33 @@ class _SpinBoxMixin:
 
     def contextMenuEvent(self, event: QtGui.QContextMenuEvent) -> None:
         """Handle context menu - right-click on buttons resets to default."""
-        style = self.style()
-        opt = QtWidgets.QStyleOptionSpinBox()
-        self.initStyleOption(opt)
+        try:
+            style = QtWidgets.QApplication.style()
+            opt = QtWidgets.QStyleOptionSpinBox()
+            self.initStyleOption(opt)
 
-        up_rect = style.subControlRect(
-            QtWidgets.QStyle.CC_SpinBox,
-            opt,
-            QtWidgets.QStyle.SC_SpinBoxUp,
-            self,
-        )
-        down_rect = style.subControlRect(
-            QtWidgets.QStyle.CC_SpinBox,
-            opt,
-            QtWidgets.QStyle.SC_SpinBoxDown,
-            self,
-        )
-        buttons_rect = up_rect.united(down_rect)
+            up_rect = style.subControlRect(
+                QtWidgets.QStyle.CC_SpinBox,
+                opt,
+                QtWidgets.QStyle.SC_SpinBoxUp,
+                self,
+            )
+            down_rect = style.subControlRect(
+                QtWidgets.QStyle.CC_SpinBox,
+                opt,
+                QtWidgets.QStyle.SC_SpinBoxDown,
+                self,
+            )
+            buttons_rect = up_rect.united(down_rect)
 
-        pos = get_event_pos(event)
-        if buttons_rect.contains(pos):
-            self.setValue(self._default_value)
-            self.selectAll()
-        else:
+            pos = get_event_pos(event)
+            if buttons_rect.contains(pos):
+                self.setValue(self._default_value)
+                self.selectAll()
+            else:
+                super().contextMenuEvent(event)
+        except RuntimeError:
+            # Style object was deleted, fall back to default context menu
             super().contextMenuEvent(event)
 
 
