@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qt-dcc-spinbox"
+version = "0.1.0"
+description = "DCC-style spinbox widgets (Houdini/3ds Max) for PySide2 and PySide6"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.7"
+authors = [
+    {name = "John Martini"}
+]
+keywords = [
+    "qt",
+    "pyside",
+    "pyside2",
+    "pyside6",
+    "houdini",
+    "3dsmax",
+    "spinbox",
+    "vfx",
+    "dcc",
+    "widget",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Multimedia :: Graphics",
+]
+
+[project.optional-dependencies]
+pyside2 = ["PySide2>=5.15"]
+pyside6 = ["PySide6>=6.0"]
+dev = [
+    "pytest>=7.0",
+    "pytest-qt>=4.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/JokerMartini/qt-dcc-spinbox"
+Repository = "https://github.com/JokerMartini/qt-dcc-spinbox"
+Issues = "https://github.com/JokerMartini/qt-dcc-spinbox/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qt_dcc_spinbox*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py37"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "D", "UP", "B", "C4", "SIM"]
+ignore = ["D100", "D104"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.7"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
