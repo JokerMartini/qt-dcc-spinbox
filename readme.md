@@ -2,6 +2,8 @@
 
 DCC-style spinbox widgets for PySide2 and PySide6, inspired by Houdini and 3ds Max.
 
+https://github.com/user-attachments/assets/46681d75-7ede-4191-ab24-8baff8590fee
+
 ## Features
 
 - **Vertical drag** - Click and drag vertically on the spinbox to adjust values (3ds Max style)
