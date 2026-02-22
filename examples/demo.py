@@ -89,6 +89,24 @@ class DemoWindow(QtWidgets.QWidget):
 
         layout.addStretch()
 
+        # Integer spinbox 0-1
+        layout.addWidget(QtWidgets.QLabel("Float SpinBox (range: 0 to 1):"))
+        self.float_spinbox = DoubleSpinBox()
+        self.float_spinbox.setRange(0 ,1)
+        self.float_spinbox.setDefaultValue(0)
+        layout.addWidget(self.float_spinbox)
+
+        layout.addSpacing(10)
+
+        # Integer spinbox 0-30
+        layout.addWidget(QtWidgets.QLabel("Integer SpinBox (range:0 to 30):"))
+        self.int_30_spinbox = SpinBox()
+        self.int_30_spinbox.setRange(0, 30)
+        self.int_30_spinbox.setDefaultValue(0)
+        layout.addWidget(self.int_30_spinbox)
+
+        layout.addSpacing(10)
+
         # Info label
         info = QtWidgets.QLabel(
             f"<small>Using: {QT_BINDING} • "
