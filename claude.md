@@ -37,16 +37,18 @@ qt-dcc-spinbox/
 ## Testing
 - Tests located in `tests/` directory
 - Use `pytest-qt` for widget testing
-- Run demo: `python examples/demo.py`
-- Run tests (Windows):
+- Python pinned to 3.10 via `.python-version` (PySide2 compatibility)
+- Run demo: `uv run --extra pyside6 -- python examples/demo.py`
+- Run all tests: `scripts\test.bat`
+- Run tests individually with uv:
+  ```
+  uv run --extra pyside2 --extra dev -- python -m pytest tests/
+  uv run --extra pyside6 --extra dev -- python -m pytest tests/
+  ```
+- Run tests manually (without uv):
   ```
   set QT_BINDING=pyside2 && python -m pytest tests/
   set QT_BINDING=pyside6 && python -m pytest tests/
-  ```
-- Run tests (Linux/Mac):
-  ```
-  QT_BINDING=pyside2 pytest tests/
-  QT_BINDING=pyside6 pytest tests/
   ```
 
 ## PySide2/PySide6 Compatibility

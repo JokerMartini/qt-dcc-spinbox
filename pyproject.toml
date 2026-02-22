@@ -70,6 +70,9 @@ ignore = ["D100", "D104"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
+[tool.uv]
+python-preference = "only-system"
+
 [tool.mypy]
 python_version = "3.7"
 warn_return_any = true

@@ -163,15 +163,50 @@ The value ladder popup dialog.
 | `set_threshold(pixels)` | Set horizontal drag threshold per step |
 | `auto_generate_steps(max, decimals)` | Auto-generate steps from range |
 
-## Running the Demo
+## Development
+
+This project uses [uv](https://docs.astral.sh/uv/) for fast dependency management and testing.
+
+### Setup
 
 ```bash
-python examples/demo.py
+# Clone and install in development mode
+git clone https://github.com/JokerMartini/qt-dcc-spinbox.git
+cd qt-dcc-spinbox
+uv sync --extra pyside6 --extra dev
 ```
+
+### Running the Demo
+
+```bash
+uv run --extra pyside6 -- python examples/demo.py
+```
+
+### Running Tests
+
+```bash
+# Run all tests against both bindings (Windows)
+scripts\test.bat
+
+# Or run individually
+uv run --extra pyside2 --extra dev -- python -m pytest tests/ -v
+uv run --extra pyside6 --extra dev -- python -m pytest tests/ -v
+```
+
+# Run all tests (both PySide2 & PySide6)
+`scripts\test.bat`
+
+# Run individually
+`uv run --extra pyside2 --extra dev -- python -m pytest tests/ -v`
+`uv run --extra pyside6 --extra dev -- python -m pytest tests/ -v`
+
+# Run demo
+`uv run --extra pyside6 -- python examples/demo.py`
+
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.10 (pinned via `.python-version` for PySide2 compatibility)
 - PySide2 >= 5.15 or PySide6 >= 6.0
 
 ## License
