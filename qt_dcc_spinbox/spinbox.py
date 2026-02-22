@@ -16,6 +16,13 @@ from .utils import get_event_pos
 
 __all__ = ["SpinBox", "DoubleSpinBox"]
 
+# Pixels of vertical drag required to traverse the full spinbox range.
+# Higher = less sensitive, lower = more sensitive.
+_DEFAULT_PIXELS_FOR_FULL_RANGE: int = 500
+
+# Cap for very large or infinite ranges to prevent insane drag speed.
+_DEFAULT_SOFT_RANGE_CAP: float = 10000.0
+
 
 class _SpinBoxMixin:
     """Shared functionality for SpinBox and DoubleSpinBox.
@@ -34,7 +41,9 @@ class _SpinBoxMixin:
         self._default_value: float = 0
 
         # Drag settings
-        self._drag_step_multiplier: float = 0.5
+        self._drag_step_multiplier: Optional[float] = None  # None = auto
+        self._pixels_for_full_range: int = _DEFAULT_PIXELS_FOR_FULL_RANGE
+        self._soft_range_cap: float = _DEFAULT_SOFT_RANGE_CAP
         self._fine_multiplier: float = 0.1  # Ctrl modifier
         self._coarse_multiplier: float = 10.0  # Shift modifier
 
@@ -95,29 +104,57 @@ class _SpinBoxMixin:
         return self.default_value
 
     @property
-    def drag_step_multiplier(self) -> float:
-        """Base multiplier for drag sensitivity."""
+    def drag_step_multiplier(self) -> Optional[float]:
+        """Manual override for drag sensitivity. None means auto."""
         return self._drag_step_multiplier
 
     @drag_step_multiplier.setter
-    def drag_step_multiplier(self, value: float) -> None:
+    def drag_step_multiplier(self, value: Optional[float]) -> None:
         self._drag_step_multiplier = value
 
     def setDragStepMultiplier(self, value: float) -> None:
-        """Set the drag step multiplier.
+        """Set a manual drag step multiplier, overriding auto-sensitivity.
 
         Args:
-            value: Multiplier for drag sensitivity.
+            value: Fixed multiplier for drag sensitivity. Each pixel of
+                vertical drag changes the value by this amount.
         """
         self.drag_step_multiplier = value
 
-    def dragStepMultiplier(self) -> float:
+    def dragStepMultiplier(self) -> Optional[float]:
         """Get the drag step multiplier.
 
         Returns:
-            The drag step multiplier.
+            The manual multiplier, or None if using auto-sensitivity.
         """
         return self.drag_step_multiplier
+
+    def setPixelsForFullRange(self, pixels: int) -> None:
+        """Set the number of pixels of drag to traverse the full range.
+
+        Only applies when drag_step_multiplier is None (auto mode).
+
+        Args:
+            pixels: Pixel count for full range traversal. Default is 400.
+        """
+        self._pixels_for_full_range = max(1, pixels)
+
+    def _get_drag_speed(self) -> float:
+        """Calculate the drag speed (value change per pixel).
+
+        If a manual multiplier is set, uses that directly. Otherwise
+        auto-calculates from the spinbox range so that the full range
+        can be traversed in ``_pixels_for_full_range`` pixels of drag.
+
+        Returns:
+            Value change per pixel of vertical mouse movement.
+        """
+        if self._drag_step_multiplier is not None:
+            return self._drag_step_multiplier
+
+        value_range = abs(self.maximum() - self.minimum())
+        effective_range = min(value_range, self._soft_range_cap)
+        return effective_range / self._pixels_for_full_range
 
     @property
     def stepper(self) -> StepperDialog:
@@ -167,17 +204,17 @@ class _SpinBoxMixin:
             self.setCursor(Qt.SizeVerCursor)
             self._is_dragging = True
 
-            # Calculate multiplier with modifiers
-            mult = self._drag_step_multiplier
+            # Calculate speed with modifiers
+            speed = self._get_drag_speed()
             modifiers = event.modifiers()
 
             if modifiers & Qt.ControlModifier:
-                mult *= self._fine_multiplier
+                speed *= self._fine_multiplier
             elif modifiers & Qt.ShiftModifier:
-                mult *= self._coarse_multiplier
+                speed *= self._coarse_multiplier
 
             # Calculate and apply new value
-            drag_delta = (self._mouse_start_pos_y - pos.y()) * mult
+            drag_delta = (self._mouse_start_pos_y - pos.y()) * speed
             self.setValue(self._drag_start_value + drag_delta)
         else:
             # Update start value if not dragging yet

@@ -99,11 +99,24 @@ class DemoWindow(QtWidgets.QWidget):
         layout.addSpacing(10)
 
         # Integer spinbox 0-30
-        layout.addWidget(QtWidgets.QLabel("Integer SpinBox (range:0 to 30):"))
+        layout.addWidget(QtWidgets.QLabel("Integer SpinBox (range: 0 to 30):"))
         self.int_30_spinbox = SpinBox()
         self.int_30_spinbox.setRange(0, 30)
         self.int_30_spinbox.setDefaultValue(0)
         layout.addWidget(self.int_30_spinbox)
+
+        layout.addSpacing(10)
+
+        # Insane range - tests soft range cap
+        layout.addWidget(
+            QtWidgets.QLabel(
+                "Insane Range SpinBox (range: -1,000,000 to 1,000,000):"
+            )
+        )
+        self.insane_spinbox = SpinBox()
+        self.insane_spinbox.setRange(-1000000, 1000000)
+        self.insane_spinbox.setDefaultValue(0)
+        layout.addWidget(self.insane_spinbox)
 
         layout.addSpacing(10)
 
