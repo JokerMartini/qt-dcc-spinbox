@@ -3,7 +3,7 @@
 Provides enhanced spinbox widgets with features from Houdini and 3ds Max:
 - Middle-click stepper dialog for precise value control (Houdini-style)
 - Click-drag on spinbox to adjust value (3ds Max-style)
-- Keyboard modifiers for step multipliers (Ctrl=fine, Shift=coarse)
+- Keyboard modifiers for step multipliers (Ctrl=fine, Alt=precision, Shift=coarse)
 - ESC to restore original value during drag
 - Right-click on buttons to reset to default value
 """
@@ -45,6 +45,7 @@ class _SpinBoxMixin:
         self._pixels_for_full_range: int = _DEFAULT_PIXELS_FOR_FULL_RANGE
         self._soft_range_cap: float = _DEFAULT_SOFT_RANGE_CAP
         self._fine_multiplier: float = 0.1  # Ctrl modifier
+        self._precision_multiplier: float = 0.01  # Alt modifier
         self._coarse_multiplier: float = 10.0  # Shift modifier
 
         # Internal drag state
@@ -210,6 +211,8 @@ class _SpinBoxMixin:
 
             if modifiers & Qt.ControlModifier:
                 speed *= self._fine_multiplier
+            elif modifiers & Qt.AltModifier:
+                speed *= self._precision_multiplier
             elif modifiers & Qt.ShiftModifier:
                 speed *= self._coarse_multiplier
 
@@ -276,6 +279,7 @@ class SpinBox(_SpinBoxMixin, QtWidgets.QSpinBox):
     - Middle-click to open stepper dialog (Houdini-style value ladder)
     - Drag vertically on spinbox to adjust value (3ds Max-style)
     - Hold Ctrl while dragging for fine adjustment (0.1x)
+    - Hold Alt while dragging for precision adjustment (0.01x)
     - Hold Shift while dragging for coarse adjustment (10x)
     - Press ESC during drag to restore original value
     - Right-click on up/down buttons to reset to default value
@@ -339,6 +343,7 @@ class DoubleSpinBox(_SpinBoxMixin, QtWidgets.QDoubleSpinBox):
     - Middle-click to open stepper dialog (Houdini-style value ladder)
     - Drag vertically on spinbox to adjust value (3ds Max-style)
     - Hold Ctrl while dragging for fine adjustment (0.1x)
+    - Hold Alt while dragging for precision adjustment (0.01x)
     - Hold Shift while dragging for coarse adjustment (10x)
     - Press ESC during drag to restore original value
     - Right-click on up/down buttons to reset to default value

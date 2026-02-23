@@ -8,7 +8,7 @@ https://github.com/user-attachments/assets/46681d75-7ede-4191-ab24-8baff8590fee
 
 - **Vertical drag** - Click and drag vertically on the spinbox to adjust values (3ds Max style)
 - **Value ladder** - Middle-click to open a stepper dialog with precise step control (Houdini style)
-- **Modifier keys** - Hold Ctrl for fine adjustment (0.1x), Shift for coarse (10x)
+- **Modifier keys** - Hold Ctrl for fine (0.1x), Alt for precision (0.01x), Shift for coarse (10x)
 - **ESC to cancel** - Press Escape during drag to restore the original value
 - **Default value** - Right-click on up/down buttons to reset to a configurable default
 - **Auto-generated steps** - Step values automatically adapt to your range and decimal settings
@@ -89,6 +89,7 @@ app.exec()
 |--------|--------|
 | Drag vertically | Adjust value up/down |
 | Ctrl + drag | Fine adjustment (0.1x speed) |
+| Alt + drag | Precision adjustment (0.01x speed) |
 | Shift + drag | Coarse adjustment (10x speed) |
 | Middle-click | Open value ladder (stepper dialog) |
 | Middle-drag horizontally | Adjust by selected step amount |
@@ -105,8 +106,12 @@ spinbox = SpinBox()
 # Set the default value (for right-click reset)
 spinbox.setDefaultValue(50)
 
-# Adjust drag sensitivity
-spinbox.setDragStepMultiplier(1.0)  # Default is 0.5
+# Drag sensitivity is auto-calculated from range by default.
+# Override with a fixed value if needed:
+spinbox.setDragStepMultiplier(1.0)
+
+# Or adjust how many pixels of drag to traverse the full range:
+spinbox.setPixelsForFullRange(300)  # Default is 500
 
 # Customize the stepper dialog
 spinbox.stepper.set_threshold(20)  # Pixels per step (default: 10)
@@ -145,8 +150,9 @@ Enhanced `QSpinBox` with DCC-style features.
 |--------|-------------|
 | `setDefaultValue(value)` | Set the value to reset to on right-click |
 | `defaultValue()` | Get the default value |
-| `setDragStepMultiplier(value)` | Set drag sensitivity (default: 0.5) |
-| `dragStepMultiplier()` | Get the drag sensitivity |
+| `setDragStepMultiplier(value)` | Override auto drag sensitivity with a fixed value |
+| `dragStepMultiplier()` | Get the drag sensitivity (None = auto) |
+| `setPixelsForFullRange(pixels)` | Set pixels of drag for full range traversal (default: 500) |
 | `stepper` | Access the `StepperDialog` instance |
 
 ### DoubleSpinBox
